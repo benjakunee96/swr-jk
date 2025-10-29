@@ -1,0 +1,77 @@
+github command
+create a new repository on the command line
+
+echo "# swr-jk" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/benjakunee96/swr-jk.git
+git push -u origin main
+
+push an existing repository from the command line
+
+git remote add origin https://github.com/benjakunee96/swr-jk.git
+git branch -M main
+git push -u origin main
+
+
+command push
+
+git add .
+git commit -m "push index.html docker"
+
+git branch
+git push -u origin main
+
+
+
+
+
+Ak = HPUAGGNNLFVWYJXBRU6O
+SK = tnHD5UrFiFDgZEsIhebKH42BE7mjrK0aifCpqhnl
+
+1.
+docker login -u ap-southeast-2@HPUAGGNNLFVWYJXBRU6O -p 442ca75c4acef3aeccb18425bc43a3e3d531f97a4c3063e503c982460d87f6df swr.ap-southeast-2.myhuaweicloud.com
+
+docker build -t myubuntu-nginx:1.0 .
+
+ลองเทส
+docker run --rm -p 8080:80 myubuntu-nginx:1.0
+# เปิด http://localhost:8080 แล้วดูหน้าใหม่
+
+LB
+TCP = 80
+Service = 8080
+
+<HOST_PORT>:<CONTAINER_PORT>
+เครื่องของคุณ (Host) : ภายใน container 
+ nginx ใช้ 8080
+
+
+test images อื่น
+docker pull hello-world:latest
+docker tag hello-world:latest swr.ap-southeast-2.myhuaweicloud.com/test-swr/hello-world:latest
+docker push swr.ap-southeast-2.myhuaweicloud.com/test-swr/hello-world:latest
+
+
+
+
+สร้าง images ขึ้นมาใหม่
+# 1) สร้าง image เดี่ยวแบบ classic เข้า "โลคอล" (ไม่ใช่ manifest list, ไม่มี provenance/SBOM)
+
+docker buildx build --platform linux/amd64 `
+  --provenance=false --sbom=false `
+  -t (imagesname):(tag-version) `
+  --output=type=docker .
+
+# 2) ตรวจสอบว่าได้ linux/amd64 เดี่ยว ๆ
+
+docker image inspect (imagesname):(tag-version) --format "{{.Os}}/{{.Architecture}}"
+
+
+# 3) แท็กและ push ไป SWR
+
+docker tag (imagesname):(tag-version)  swr.ap-southeast-2.myhuaweicloud.com/(organize)/(imagesname):(tag-version) 
+
+docker push swr.ap-southeast-2.myhuaweicloud.com/(organize)/(imagesname):(tag-version) 
