@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myubuntu-nginx
+  namespace: jenkin
+  labels:
+    app: myubuntu-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myubuntu-nginx
+  template:
+    metadata:
+      labels:
+        app: myubuntu-nginx
+    spec:
+      # อ้างอิง secret ที่สร้างไว้ เพื่อดึงอิมเมจจาก SWR (private)
+      imagePullSecrets:
+        - name: swr-regcred
+      containers:
+        - name: myubuntu-nginx
+          image: swr.ap-southeast-2.myhuaweicloud.com/test-swr/myubuntu-nginx:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          # (แนะนำ) health checks
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          # (ทางเลือก) ลิมิต/รีเควสทรัพยากร
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
